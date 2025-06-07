@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment by Credit Card</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 1.5rem;
+        }
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        /* Credit card icons */
+        .card-number-container {
+            position: relative;
+        }
+        .card-number-container::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 25px;
+            background-image: url('https://cdnjs.cloudflare.com/ajax/libs/credit-card-icons/1.0.0/flat.png');
+            background-size: cover;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            .btn {
+                padding: 0.5rem;
+            }
+        }
+        /* Additional custom styles */
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        /* Animation for success page */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-body {
+            animation: fadeIn 0.5s ease-out;
+        }
+        /* Credit card input formatting */
+        #cardNumber {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="25" viewBox="0 0 40 25"><rect width="40" height="25" rx="3" fill="%23f8f9fa"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Payment Section -->
+    <div id="paymentSection" class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h4 mb-0">Payment Information</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="paymentForm">
+                            <!-- Order Summary -->
+                            <div class="mb-4">
+                                <h3 class="h5 mb-3">Order Summary</h3>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Product 1</td>
+                                                <td>1</td>
+                                                <td>$19.99</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Product 2</td>
+                                                <td>2</td>
+                                                <td>$29.98</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2">Total</th>
+                                                <th>$49.97</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Payment Method -->
+                            <div class="mb-4">
+                                <h3 class="h5 mb-3">Payment Method</h3>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
+                                    <label class="form-check-label" for="creditCard">
+                                        Credit Card
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
+                                    <label class="form-check-label" for="paypal">
+                                        PayPal
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- Credit Card Form -->
+                            <div id="creditCardForm">
+                                <div class="mb-3">
+                                    <label for="cardholderName" class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" id="cardholderName" required>
+                                </div>
+                                <div class="mb-3 card-number-container">
+                                    <label for="cardNumber" class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="expiryDate" class="form-label">Expiration Date</label>
+                                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" placeholder="123" required>
+                                    </div>
+                                </div>
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="saveCard">
+                                    <label class="form-check-label" for="saveCard">
+                                        Save this card for future payments
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- PayPal Form (hidden by default) -->
+                            <div id="paypalForm" class="d-none">
+                                <div class="alert alert-info">
+                                    You will be redirected to PayPal to complete your payment.
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Complete Payment</button>
+                                <button type="button" class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Confirmation Section (hidden by default) -->
+    <div id="confirmationSection" class="container py-5 d-none">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow text-center">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="h4 mb-0">Order Confirmed!</h2>
+                    </div>
+                    <div class="card-body py-5">
+                        <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                        </div>
+                        <h3 class="h4 mb-3">Thank you for your order!</h3>
+                        <p class="mb-4">Your payment has been processed successfully. We've sent a confirmation email to your registered email address.</p>
+                        <div class="card mb-4">
+                            <div class="card-body text-start">
+                                <h4 class="h5 mb-3">Order Details</h4>
+                                <p><strong>Order ID:</strong> #123456</p>
+                                <p><strong>Date:</strong> <span id="orderDate"></span></p>
+                                <p><strong>Total:</strong> $49.97</p>
+                                <p><strong>Payment Method:</strong> Credit Card ending in 3456</p>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 col-md-6 mx-auto">
+                            <a href="#" class="btn btn-primary" id="backToHomeBtn">Back to Home</a>
+                            <a href="#" class="btn btn-outline-secondary">View Order Details</a>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Need help? <a href="#">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle between payment methods
+        const creditCardRadio = document.getElementById('creditCard');
+        const paypalRadio = document.getElementById('paypal');
+        const creditCardForm = document.getElementById('creditCardForm');
+        const paypalForm = document.getElementById('paypalForm');
+        creditCardRadio.addEventListener('change', function() {
+            if (this.checked) {
+                creditCardForm.classList.remove('d-none');
+                paypalForm.classList.add('d-none');
+            }
+        });
+        paypalRadio.addEventListener('change', function() {
+            if (this.checked) {
+                creditCardForm.classList.add('d-none');
+                paypalForm.classList.remove('d-none');
+            }
+        });
+        // Format card number input
+        const cardNumberInput = document.getElementById('cardNumber');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '');
+                if (value.length > 0) {
+                    value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+                }
+                e.target.value = value;
+            });
+        }
+        // Format expiry date input
+        const expiryDateInput = document.getElementById('expiryDate');
+        if (expiryDateInput) {
+            expiryDateInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+        }
+        // Restrict CVV input to numbers only
+        const cvvInput = document.getElementById('cvv');
+        if (cvvInput) {
+            cvvInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+        }
+        // Handle form submission
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Show confirmation section, hide payment section
+            document.getElementById('paymentSection').classList.add('d-none');
+            document.getElementById('confirmationSection').classList.remove('d-none');
+            // Set current date
+            document.getElementById('orderDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric'
+            });
+        });
+        // Back to Home button (for demo, just reloads the page)
+        document.getElementById('backToHomeBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            location.reload();
+        });
+        // Cancel button (for demo, just reloads the page)
+        document.getElementById('cancelBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            location.reload();
+        });
+    });
+    </script>
+</body>
+</html>
