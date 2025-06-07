@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shopping Cart Web Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #222;
+      color: #fff;
+      padding: 1rem 2rem;
+    }
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    nav ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+      }
+    }
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .product-card img {
+      width: 100%;
+      max-width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .product-card h3 {
+      margin: 1rem 0 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    .product-card p {
+      margin: 0.5rem 0;
+      color: #555;
+    }
+    .product-card button {
+      margin-top: auto;
+      padding: 0.5rem 1.2rem;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .product-card button:hover {
+      background: #0056b3;
+    }
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .cart-table th, .cart-table td {
+      padding: 1rem;
+      text-align: left;
+    }
+    .cart-table th {
+      background: #f1f1f1;
+    }
+    .cart-table img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .cart-actions button {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cart-actions button:hover {
+      background: #a71d2a;
+    }
+    .cart-total {
+      text-align: right;
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    @media (max-width: 700px) {
+      .cart-table, .cart-table thead, .cart-table tbody, .cart-table th, .cart-table td, .cart-table tr {
+        display: block;
+      }
+      .cart-table tr {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+      }
+      .cart-table th {
+        display: none;
+      }
+      .cart-table td {
+        padding: 0.7rem 0.5rem;
+        text-align: right;
+        position: relative;
+      }
+      .cart-table td:before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    .form-container {
+      background: #fff;
+      max-width: 400px;
+      margin: 3rem auto;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .form-container h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-container button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .form-container button:hover {
+      background: #0056b3;
+    }
+    .form-container .form-link {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .form-container .form-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">ShopCart</div>
+    <ul>
+      <li><a href="#" onclick="showPage('catalog')">Home</a></li>
+      <li><a href="#" onclick="showPage('cart')">Cart</a></li>
+      <li><a href="#" onclick="showPage('login')">Login</a></li>
+      <li><a href="#" onclick="showPage('register')">Register</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <!-- Catalog Page -->
+    <div id="catalog-page">
+      <h1>Product Catalog</h1>
+      <div class="catalog" id="catalog"></div>
+    </div>
+    <!-- Cart Page -->
+    <div id="cart-page" style="display:none;">
+      <h1>Your Shopping Cart</h1>
+      <table class="cart-table" id="cart-table"></table>
+      <div class="cart-total" id="cart-total"></div>
+    </div>
+    <!-- Login Page -->
+    <div id="login-page" style="display:none;">
+      <div class="form-container">
+        <h2>Login</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required>
+          </div>
+          <button type="submit">Login</button>
+        </form>
+        <a class="form-link" href="#" onclick="showPage('register')">Don't have an account? Register</a>
+      </div>
+    </div>
+    <!-- Register Page -->
+    <div id="register-page" style="display:none;">
+      <div class="form-container">
+        <h2>Register</h2>
+        <form id="register-form">
+          <div class="form-group">
+            <label for="reg-name">Name</label>
+            <input type="text" id="reg-name" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm">Confirm Password</label>
+            <input type="password" id="reg-confirm" required>
+          </div>
+          <button type="submit">Register</button>
+        </form>
+        <a class="form-link" href="#" onclick="showPage('login')">Already have an account? Login</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Sample products (use your own image URLs or placeholder images)
+    const products = [
+      {id: 1, name: "Wireless Headphones", price: 59.99, image: "https://picsum.photos/id/180/200/200"},
+      {id: 2, name: "Smart Watch", price: 99.99, image: "https://picsum.photos/id/1062/200/200"},
+      {id: 3, name: "Bluetooth Speaker", price: 39.99, image: "https://picsum.photos/id/1080/200/200"},
+      {id: 4, name: "Fitness Tracker", price: 29.99, image: "https://picsum.photos/id/1011/200/200"},
+      {id: 5, name: "E-Reader", price: 79.99, image: "https://picsum.photos/id/1025/200/200"},
+      {id: 6, name: "Portable Charger", price: 19.99, image: "https://picsum.photos/id/1044/200/200"}
+    ];
+
+    // Page navigation
+    function showPage(page) {
+      document.getElementById('catalog-page').style.display = (page === 'catalog') ? '' : 'none';
+      document.getElementById('cart-page').style.display = (page === 'cart') ? '' : 'none';
+      document.getElementById('login-page').style.display = (page === 'login') ? '' : 'none';
+      document.getElementById('register-page').style.display = (page === 'register') ? '' : 'none';
+      if (page === 'catalog') renderCatalog();
+      if (page === 'cart') renderCart();
+    }
+
+    // Catalog rendering
+    function renderCatalog() {
+      const catalog = document.getElementById('catalog');
+      catalog.innerHTML = products.map(p => `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>$${p.price.toFixed(2)}</p>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      `).join('');
+    }
+
+    // Cart rendering
+    function renderCart() {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const table = document.getElementById('cart-table');
+      if (cart.length === 0) {
+        table.innerHTML = '<tr><td>Your cart is empty.</td></tr>';
+        document.getElementById('cart-total').textContent = '';
+        return;
+      }
+      let rows = `
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+      let total = 0;
+      cart.forEach((item, idx) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        rows += `
+          <tr>
+            <td data-label="Product"><img src="${item.image}" alt="${item.name}"></td>
+            <td data-label="Name">${item.name}</td>
+            <td data-label="Price">$${item.price.toFixed(2)}</td>
+            <td data-label="Qty">${item.qty}</td>
+            <td data-label="Subtotal">$${subtotal.toFixed(2)}</td>
+            <td data-label="Action" class="cart-actions">
+              <button onclick="removeFromCart(${idx})">Remove</button>
+            </td>
+          </tr>
+        `;
+      });
+      rows += '</tbody>';
+      table.innerHTML = rows;
+      document.getElementById('cart-total').textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    // Add to cart
+    function addToCart(id) {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const product = products.find(p => p.id === id);
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({...product, qty: 1});
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert('Added to cart!');
+    }
+
+    // Remove from cart
+    function removeFromCart(idx) {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.splice(idx, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    // Login/Register
+    document.addEventListener('DOMContentLoaded', function() {
+      showPage('catalog');
+      // Login form
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.onsubmit = function(e) {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value;
+          localStorage.setItem('user', email);
+          alert('Logged in as ' + email);
+          showPage('catalog');
+        }
+      }
+      // Register form
+      const registerForm = document.getElementById('register-form');
+      if (registerForm) {
+        registerForm.onsubmit = function(e) {
+          e.preventDefault();
+          const email = document.getElementById('reg-email').value;
+          localStorage.setItem('user', email);
+          alert('Registered as ' + email);
+          showPage('catalog');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
